@@ -1,4 +1,5 @@
 ﻿using DataAccessLibrary;
+using DataAccessLibrary.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace SqlServerUI
@@ -9,7 +10,8 @@ namespace SqlServerUI
     {
       SqlCrud sql = new SqlCrud(GetConnectionString());
 
-      ReadAllContacts(sql);
+      //ReadAllContacts(sql);
+      ReadFullContact(sql, 1002);
 
       Console.ReadLine();
     }
@@ -24,6 +26,31 @@ namespace SqlServerUI
       }
     }
 
+    private static void ReadFullContact(SqlCrud sql, int contactId)
+    {
+      var contact = sql.GetFullContactById(contactId);
+
+      if (contact == null)
+      {
+        Console.WriteLine($"Contact {contactId} not found.");
+        return;
+      }
+
+      Console.Write("Contact Info: \n");
+      Console.Write($"{contact.BasicInfo.FirstName} - {contact.BasicInfo.LastName} \n");
+
+      Console.Write("Phone Info: \n");
+      foreach (PhoneNumberModel phone in contact.PhoneNumbers)
+      {
+        Console.WriteLine($"{phone.Id} - {phone.PhoneNumber}");
+      }
+
+      Console.Write("Email Info: \n");
+      foreach (EmailAddress email in contact.EmailAddresses)
+      {
+        Console.WriteLine($"{email.Id} - {email.Email}");
+      }
+    }
 
     private static string GetConnectionString(string connectionStringName = "Default")
     {
@@ -35,7 +62,6 @@ namespace SqlServerUI
       string output = config.GetConnectionString(connectionStringName);
 
       return output;
-
     }
   }
 }
