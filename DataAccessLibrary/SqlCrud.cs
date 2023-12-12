@@ -42,10 +42,21 @@ namespace DataAccessLibrary
       return outup;
     }
 
-    public void CreateContact (FullContactModel contact)
+    public int CreateContact (BasicContactModel contact)
     {
-      
+      //create contact
+      string sql = "INSERT INTO dbo.Contacts (FirstName, LastName) output inserted.Id VALUES (@FirstName, @LastName);";
+      _db.SaveData<BasicContactModel>(sql, new BasicContactModel {FirstName= contact.FirstName, LastName=contact.LastName}, _connectionString);
 
+      int.TryParse(_db.LoadData<string, dynamic>("SELECT Id FROM dbo.Contacts WHERE FirstName = @FirstName and LastName = @LastName ORDER BY 1 DESC", new { contact.FirstName, contact.LastName }, _connectionString).FirstOrDefault(), out int resultId);
+
+      return resultId;
+    }
+
+    public void UpdateContact (BasicContactModel contact)
+    {
+      string sql = "UPDATE dbo.Contacts SET FirstName = @FirstName, LastName = @LastName WHERE id = @id";
+      _db.SaveData(sql, new {contact.FirstName, contact.LastName, contact.Id}, _connectionString);
     }
   }
 }

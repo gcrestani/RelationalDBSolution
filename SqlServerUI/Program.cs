@@ -10,8 +10,16 @@ namespace SqlServerUI
     {
       SqlCrud sql = new SqlCrud(GetConnectionString());
 
-      //ReadAllContacts(sql);
-      ReadFullContact(sql, 1002);
+      ReadAllContacts(sql);
+      //ReadFullContact(sql, 1002);
+
+      //Console.WriteLine("Creating a new contact...");
+      //int newContactId = sql.CreateContact(new BasicContactModel { FirstName = "Joao", LastName = "De Santo Cristo" });
+      //Console.WriteLine("Created contact id "+newContactId);
+
+      Console.WriteLine("Updating contact 1");
+      sql.UpdateContact(new BasicContactModel { Id = 1, FirstName = "Guilherme", LastName = "Silva" });
+      ReadAllContacts(sql);
 
       Console.ReadLine();
     }
